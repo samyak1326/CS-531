@@ -25,7 +25,7 @@ int PrintList();
 bool validateAlias(char aliasname[20]);
 void deleteRecord(char aliasname[20]);
 
-struct address_t 
+struct address_t        //srructure given in the question
 { 
 int octet[4]; 
 char alias[11]; 
@@ -34,7 +34,7 @@ struct address_t *next;
 
 struct address_t *head = NULL; 
 
-int main()
+int main()      // main menu.
 {
     char choice ; 
     int tempOption;
@@ -70,7 +70,7 @@ int main()
     }while(ch != EOF);
     fclose(filePtr);
 
-    do
+    do          // options to do the task
     {
         /* code */
         printf("1: Add Address\n");
@@ -104,7 +104,7 @@ int main()
     return 0; 
 }
 
-int check_For_Choice(int choice)
+int check_For_Choice(int choice)            // initializing the main menu
 {                                             
     switch(choice){
         case 1:
@@ -220,7 +220,8 @@ int save_to_File()          //save the data to new file
     printf("Data Saved To The FILE");
     return 0;
 }
-char* toLowerStr(char str[])
+
+char* toLowerStr(char str[])        //function to convert string to Lowercase
 {
     int i = 0;
     char *newstr = (char*)malloc(strlen(str));
@@ -231,7 +232,7 @@ char* toLowerStr(char str[])
     return newstr;
 }
 
-bool validateAddress(int ipv4Adrs[])
+bool validateAddress(int ipv4Adrs[])        //function to validate the Address
 {
     bool valid_ipv4=true;
 
@@ -249,7 +250,7 @@ bool validateAddress(int ipv4Adrs[])
     return valid_ipv4;
 
 }
-bool validateAlias(char aliasname[20])
+bool validateAlias(char aliasname[20])      //function to validate the alias name
 {
     bool valid = true;
     if(strlen(aliasname) > 10 || strlen(aliasname) <= 0 
@@ -259,7 +260,7 @@ bool validateAlias(char aliasname[20])
     return valid;
 }
 
-bool checkUnique(int ipv4Adrs[], char aliasname[])
+bool checkUnique(int ipv4Adrs[], char aliasname[])          //function to check if the ipv4 address and Alias Name are unique or not
 {
     bool check = true;
     struct address_t *node = head;
@@ -282,8 +283,8 @@ bool checkUnique(int ipv4Adrs[], char aliasname[])
     }
     return check;
 }
-int addAddress()
-{                                                                          
+int addAddress()                //function to add new Address
+{
     int ipv4Adrs[4];
     char aliasName[20];
     char ipStr[25];
@@ -332,7 +333,7 @@ int addAddress()
     return 0;
 }
 
-void DisplayAlias(int ipv4Adrs[])
+void DisplayAlias(int ipv4Adrs[])           //function to display Alias
 {
     int cnt = 0;
     struct address_t *node = head;
@@ -351,7 +352,7 @@ void DisplayAlias(int ipv4Adrs[])
     return;
 }
 
-bool validateAdrsLocation(int ipv4Adrs[])
+bool validateAdrsLocation(int ipv4Adrs[])       //function to validate the Address location
 {
     bool check = true;
     for(int i=0; i<2; i++)
@@ -366,7 +367,7 @@ bool validateAdrsLocation(int ipv4Adrs[])
     return check;
 }
 
-int displayAliasForLocation()
+int displayAliasForLocation()           //function to display Alias name for Location
 {
     char IpStr[30];
     int ipv4Adrs[4];
@@ -392,7 +393,7 @@ int displayAliasForLocation()
 }
 
 
-int lookUpAddress()
+int lookUpAddress()         //function to find an existing Address
 {
     char aliasname[20]="";
     bool check = false;
@@ -428,7 +429,8 @@ int lookUpAddress()
     return 0;
 }
 
-bool checkUniqueAdrs(int ipv4Adrs[]){
+bool checkUniqueAdrs(int ipv4Adrs[])            //function to check Unique Address and return true/false.
+{
     struct address_t *node = head;
 
     bool unique = true;
@@ -444,7 +446,7 @@ bool checkUniqueAdrs(int ipv4Adrs[]){
     }
 }
 
-void updateAdrs(int ipv4Adrs[4], char aliasname[])
+void updateAdrs(int ipv4Adrs[4], char aliasname[])      //function to Update Address & call this function in UpdateAddress()
 {
     struct address_t *node = head;
     while(node != NULL)
@@ -457,7 +459,7 @@ void updateAdrs(int ipv4Adrs[4], char aliasname[])
     }
 }
 
-int UpdateAddress()
+int UpdateAddress()                 //function to Update Address 
 {
     int ipv4Adrs[5];
     char aliasname[20]= "" ;
@@ -472,7 +474,8 @@ int UpdateAddress()
         fgets(aliasname, 20, stdin);
         aliasname[strlen(aliasname)-1] = '\0';
 
-        if(validateAlias(aliasname)){                                                       
+        if(validateAlias(aliasname))
+        {                                                       
             struct address_t *node = head;
             while(node != NULL)
             {
@@ -514,7 +517,7 @@ int UpdateAddress()
     return 0;
 }
 
-int deleteAddress()
+int deleteAddress()         //function to delete the Address
 {
     int ipv4Adrs[4];
     char aliasname[20] = "";
@@ -571,7 +574,7 @@ int deleteAddress()
     return 0;
 }
 
-int PrintList()
+int PrintList()     //function to Print the complete List
 {
     struct address_t *node = head;
     int cnt= 0 ;
@@ -593,7 +596,7 @@ int PrintList()
     return 0;
 }
 
-void deleteRecord(char aliasname[20])
+void deleteRecord(char aliasname[20])           //function to delete the record
 {
     struct address_t *node = head;
     struct address_t *prev = NULL;
