@@ -1,6 +1,3 @@
-//Pradeep Ranjan
-//G01373552
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -16,7 +13,8 @@ typedef struct address_t{
 
 //using boolean datatype to check duplicate entry
 bool checkal, del, upd, dup;
-//prototypea used in the file
+
+//function declaration
 void checkDuplicate(list *head,int address[4] ,char str[11]);
 void freeTree(list* node);
 list* insertintoTree(list* node, char str[11], int addr[4]);
@@ -35,10 +33,12 @@ void exitFromProg(list *root);
 
 //checking for duplicate entry for any IPv4 or alias name
 //-----------------------------------------------
-void checkDuplicate(list *node,int address[4] ,char str[11]){
+void checkDuplicate(list *node,int address[4] ,char str[11])
+{
   list *temp = node;
   if(temp != NULL){
-    if(temp->octet[0] == address[0] && temp->octet[1] == address[1] && temp->octet[2] == address[2] & temp->octet[3] == address[3]){
+    if(temp->octet[0] == address[0] && temp->octet[1] == address[1] && temp->octet[2] == address[2] & temp->octet[3] == address[3])
+    {
       dup = true;
       return;
     }
@@ -56,10 +56,12 @@ void checkDuplicate(list *node,int address[4] ,char str[11]){
 
 //checking for duplicate entry for any IPv4 or alias name its different than above funtion
 //as it will return 1 when alias is not available in the list
-void checkIPDuplicate(list *node,int change[4]){
+void checkIPDuplicate(list *node,int change[4])
+{
   list *temp = node;
   
-  if(temp != NULL){
+  if(temp != NULL)
+  {
     if(temp->octet[0] == change[0] && temp->octet[1] == change[1] && temp->octet[2] == change[2] & temp->octet[3] == change[3]){
       dup = true;
       return;
@@ -68,16 +70,13 @@ void checkIPDuplicate(list *node,int change[4]){
     checkIPDuplicate(node->left,change);
     checkIPDuplicate(node->right,change);
   }
- 
-
   return;
 }
 
 
-
-//insertion funtion
-list* insertintoTree(list* node, char str[11], int addr[4]) {
-  
+//function to insert data into the tree
+list* insertintoTree(list* node, char str[11], int addr[4])
+{
   list* root = node;
   if (node == NULL) {
     node = (struct address_t*) malloc (sizeof(struct address_t));
@@ -89,11 +88,13 @@ list* insertintoTree(list* node, char str[11], int addr[4]) {
     node->left = node->right = NULL;
     root = node;
   }
-  else {// insert to the left or right
+
+  else // insert to the left or right
+  {
     if (strcmp(node->alias,str) > 0) 
-     node->left = insertintoTree(node->left, str, addr);
+      node->left = insertintoTree(node->left, str, addr);
     else 
-     node->right = insertintoTree(node->right, str, addr);
+      node->right = insertintoTree(node->right, str, addr);
   }
   return root;
 }
@@ -111,25 +112,25 @@ list* updateData(list* node,char updatename[11]){
         printf("---------------------------------------------------------");
         printf("\nOld IP: %d.%d.%d.%d\n",temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3]);
         printf("---------------------------------------------------------\n");
-        printf("Enter the new IPv4\n");
+        printf("Enter the new IPv4 Address: \n");
         fscanf(stdin, "%d.%d.%d.%d", &change[0], &change[1], &change[2], &change[3]);
         dup = false;
 
         if(change[0] < 0 || change[0] > 255 || change[1] < 0 || change[1] > 255 || change[2] < 0 || change[2] > 255 || change[3] < 0 || change[3] > 255){
-          printf("You have enter wrong octet value{ correct : 0 - 255}\n");
+          printf("You have entered wrong octet values. The value must be between 0 - 255 \n");
           return node;
         }
-
 
         checkIPDuplicate(node, change);
   
         if(dup == true){
-          printf("Duplicate IP found in the file...enter again\n");
+          printf("Duplicate IP. Please Try Again\n");
         }
-        else{
+        else
+        {
         // Replace Alias and IP 
         printf("\n-----------------------\n");
-        printf("New address has been updated");
+        printf("New address updated.");
         printf("\n-----------------------\n");
         temp->octet[0] = change[0];
         temp->octet[1] = change[1];
@@ -141,8 +142,6 @@ list* updateData(list* node,char updatename[11]){
           updateData(temp->left, updatename);
           updateData(temp->right, updatename);
     }
-  
-
   }
 
   return node;
@@ -208,9 +207,9 @@ list* deleteAlias(list *node, char deletename[11])
             else if(node->right == NULL)
                node = node->left;
              
-                printf("-------------------------\n");
-                printf("One entry has been deleted\n");
-                printf("-------------------------\n");
+                printf("------------------------------------------------------------------------\n");
+                printf("The Ipv4 address along with the Alias name has been deleted from the file.\n");
+                printf("------------------------------------------------------------------------\n");
                 del = true;
                 free(temp);
 
@@ -218,7 +217,7 @@ list* deleteAlias(list *node, char deletename[11])
             else{
                 del = true;
                 printf("-------------------------\n");
-                printf("User has not deleted any item\n");
+                printf("You did not Delete any Entry.\n");
                 printf("-------------------------\n");
             }
 
@@ -237,9 +236,9 @@ void savetofile_recursive(FILE *fp, list* temp1)
     }
 }
 // this is for saving int text file
-void savetofile(list *node){
-    FILE * fp;
-    fp = fopen ("CS531_Inet.txt", "w");
+void savetofile(list *node)
+{
+    FILE *fp = fopen ("CS531_Inet.txt", "w");
 
     list *temp = node;
     if(fp==NULL)
@@ -252,7 +251,7 @@ void savetofile(list *node){
       savetofile_recursive(fp, temp);
     }
     fclose(fp);
- }
+}
 
 //display data in alphabate order(here used inorder traversal)
 void inOrder(list* node)
@@ -288,23 +287,24 @@ void lookupAlias(list *node,int ipnum1, int ipnum2){
 }
 //looking for any alias
 //-----------------------------------------------
-list *lookupdata(list *node, char checkname[11]){
-
-    if(node != NULL){
-        if(strcmp(node->alias,checkname) == 0){
-           return node;
-        } 
-        else {
-            list* foundNode = lookupdata(node->left, checkname);
-            if(foundNode == NULL) {
-                foundNode = lookupdata(node->right, checkname);
-            }
-            return foundNode;
-         }
-    } 
-    else {
-        return NULL;
-    }
+list *lookupdata(list *node, char checkname[11])
+{
+  if(node != NULL){
+      if(strcmp(node->alias,checkname) == 0){
+          return node;
+      } 
+      else {
+          list* foundNode = lookupdata(node->left, checkname);
+          if(foundNode == NULL) {
+              foundNode = lookupdata(node->right, checkname);
+          }
+          return foundNode;
+        }
+  } 
+  else 
+  {
+      return NULL;
+  }
 }
 
 //exit funtion
@@ -326,18 +326,20 @@ void freeTree(list* node) {
 }
 
 //main funtion
-int main(){
-
+int main()
+{
   list address_t;
   list *node = NULL;
 
   FILE* fp = fopen("CS531_Inet.txt", "r");
-  if (fp == NULL) {
-        printf("File not found!");
-        exit(0);
-    }
+  if (fp == NULL) 
+  {
+      printf("File not found!");
+      exit(0);
+  }
 
-    while(fscanf(fp,"%s %d.%d.%d.%d", address_t.alias, &address_t.octet[0],&address_t.octet[1], &address_t.octet[2], &address_t.octet[3]) > 0) {
+    while(fscanf(fp,"%s %d.%d.%d.%d", address_t.alias, &address_t.octet[0],&address_t.octet[1], &address_t.octet[2], &address_t.octet[3]) > 0) 
+    {
         int ip[] = { 
           address_t.octet[0], 
           address_t.octet[1], 
@@ -348,154 +350,170 @@ int main(){
     }
     fclose(fp);
 
+  while(1)
+  {
 
- while(1){
+    char updatename[11];
+    char deletename[11];
+    int ipnum1,ipnum2;
+    int ch;
+    char checkname[15];
+    printf("\nMenu\n");
 
-      char updatename[11];
-      char deletename[11];
-      int ipnum1,ipnum2;
-      int ch;
-      char checkname[15];
-      printf("\nMenu\n");
-      printf("1) Add address\n2) Look up address\n3) Update address\n4) Delete address\n5) Display list\n6) Display aliases for location\n7) Save to file\n8) Quit\n");
-      fflush(stdin);
-      scanf("%d",&ch);
+    printf("1: Add Address\n");
+    printf("2: Look up Address\n");
+    printf("3: Update Address\n");
+    printf("4: Delete Address\n");
+    printf("5: Display List\n");
+    printf("6: Display aliases for location\n");
+    printf("7: Save to File\n");
+    printf("8: Quit\n");
 
-  switch(ch){
-    case 1:
-        printf("Please enter IPv4: ");
-        fscanf(stdin, "%d.%d.%d.%d", &address_t.octet[0],&address_t.octet[1], &address_t.octet[2], &address_t.octet[3]); 
-        printf("Please enter alias: ");
-        fscanf(stdin, "%s",address_t.alias); 
-        dup = false;
+    fflush(stdin);
+    printf("\nEnter your Choice: ");
+    scanf("%d",&ch);
 
-        if(address_t.octet[0] > 0 && address_t.octet[0] < 255 && address_t.octet[1] > 0 && address_t.octet[1] < 255 && address_t.octet[2] > 0 && address_t.octet[2] < 255 && address_t.octet[3] > 0 && address_t.octet[3] < 255){
-          int ip[4] = { 
-          address_t.octet[0], 
-          address_t.octet[1], 
-          address_t.octet[2], 
-          address_t.octet[3]
-                     };
+    switch(ch)
+    {
+      case 1:
+          printf("Enter a Valid IPv4 Address : ");
+          fscanf(stdin, "%d.%d.%d.%d", &address_t.octet[0],&address_t.octet[1], &address_t.octet[2], &address_t.octet[3]); 
+          printf("Enter the ALIAS name: ");
+          fscanf(stdin, "%s",address_t.alias); 
+          dup = false;
 
+          if(address_t.octet[0] > 0 && address_t.octet[0] < 255 && address_t.octet[1] > 0 && address_t.octet[1] < 255 && address_t.octet[2] > 0 && address_t.octet[2] < 255 && address_t.octet[3] > 0 && address_t.octet[3] < 255)
+          {
+            int ip[4] = 
+            { 
+              address_t.octet[0], 
+              address_t.octet[1], 
+              address_t.octet[2], 
+              address_t.octet[3]
+            };
 
-          checkDuplicate(node,ip,address_t.alias);
-          if(dup == true){
-            printf("---------------------------------------\n");
-            printf("Its duplicate entry please enter again\n");
-            printf("---------------------------------------\n");
+            checkDuplicate(node,ip,address_t.alias);
+
+            if(dup == true){
+              printf("---------------------------------------\n");
+              printf("This is a Duplicate entry. Please Try Again\n");
+              printf("---------------------------------------\n");
+            }
+            else {           
+            node = insertintoTree(node,address_t.alias,ip);
+            printf("\n--------------\n");
+            printf("List Updated");
+            printf("\n---------------\n");
+            }
           }
-          else {           
-          node = insertintoTree(node,address_t.alias,ip);
-          printf("\n------------------------------\n");
-          printf("One data have been added");
-          printf("\n------------------------------\n");
-           }
-        }
-        else{
-          printf("\n----------------------------------------------\n");
-          printf("Check your entered Data. Outer ranger Ip-Address");
-          printf("\n----------------------------------------------\n");
-         }
-      break;
-    case 2:
-        printf("\n------------------------------\n");
-        printf("The Ip AddressLookup\n");
-        printf("Please enter the Alias name\n");
-        scanf("%s",checkname);
-
-        printf("\n------------------------------\n");
-        list *temp = lookupdata(node,checkname);
-        if(temp){
-          printf("One data has been found\n");
-          printf("%s: %d.%d.%d.%d",temp->alias, temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3] );
-          printf("\n------------------------------\n");
-        }
-        else{
-          printf("\n------------------------------\n");
-          printf("No alias found in the file\n");
-          printf("\n------------------------------\n");
-        }
-
-      break;
-    case 3:
-      
-        printf("\n----------\n");
-        printf("Update any Address\n");
-        printf("Please enter the Alias name\n");
-        scanf("%s",updatename);
-        upd = false;
-        node = updateData(node,updatename);
-        if(upd == false){
-          printf("\n----------\n");
-          printf("Alias: %s is not available in the file",updatename);
-          printf("\n----------\n");
-        }
-
-      break;
-    case 4:
-
-       printf("\n----------\n");
-         printf("Delete address\n");
-         printf("Please enter Alias name which you want to Delete\n");
-         scanf("%s",deletename);
-         del = false;
-         node = deleteAlias(node,deletename);
-         if(del == false){
-          printf("\n----------\n");
-          printf("The entered Alias is not available in the list");
-         }
-         printf("\n----------\n");
-      break;
-    case 5:
-    	printf("\n----------\n");
-    	printf("List:");
-    	printf("\n-----------------\n");
-        inOrder(node);
-        printf("\n-----------------\n");
-      break;
-    case 6:
-        printf("\n----------\n");
-        printf("The aliases Lookup\n");
-
-        printf("Please enter the IP(i.e. two values between 0 – 255)\n");
-        scanf("%d.%d",&ipnum1,&ipnum2);
-        if(ipnum1 > 0 && ipnum1 < 255 && ipnum2 > 0 && ipnum2 < 255){
-          checkal = false;
-          printf("Location: %d.%d\n", ipnum1, ipnum2);
-          lookupAlias(node,ipnum1,ipnum2);
-
-          if(checkal == false){
-            printf("\n----------\n");
-            printf("No result available.. Please try again");
-            printf("\n----------\n");
+          else
+          {
+            printf("\n----------------------------------------------\n");
+            printf("The IPV4 Address is Incorrect. Outer ranger Ip-Address");
+            printf("\n----------------------------------------------\n");
           }
-        }
-        else{
-          printf("--------------------------------------------------------\n");
-          printf("Entered Octet is out of the range please enter again...\n");
-          printf("--------------------------------------------------------\n");
-        }
-        
-        
-      break;
-    case 7:
-      printf("\n-----------\n");
-      printf("Saving into files\n");
-      savetofile(node);
-      printf("\n-----------\n");
-      break;
-    case 8:
-      exitFromProg(node);
-      break;
-
-
-    default: 
-        printf("\n-------------------------------\n");
-        printf("Enter some valid option please...\n");
-        printf("\n-------------------------------\n");
         break;
-  }
-}
+      case 2:
+          printf("\n------------------------------\n");
+          printf("The Ip AddresscLookup - \n");
+          printf("Please enter the Alias name: \n");
+          scanf("%s",checkname);
 
+          printf("\n------------------------------\n");
+          list *temp = lookupdata(node,checkname);
+          if(temp){
+            printf("One Entry is Available\n");
+            printf("%s: %d.%d.%d.%d",temp->alias, temp->octet[0], temp->octet[1], temp->octet[2], temp->octet[3] );
+            printf("\n------------------------------\n");
+          }
+          else{
+            printf("\n------------------------------\n");
+            printf("No Alias Name found in the file.\n");
+            printf("\n------------------------------\n");
+          }
+        break;
+
+      case 3:
+        
+          printf("\n----------\n");
+          printf("Update The Ipv4 Address - \n");
+          printf("Enter a Valid Alias Name in the File: \n");
+          scanf("%s",updatename);
+          upd = false;
+          node = updateData(node,updatename);
+          if(upd == false){
+            printf("\n----------\n");
+            printf("Alias: %s is not available in the file",updatename);
+            printf("\n----------\n");
+          }
+
+        break;
+
+      case 4:
+        printf("\n----------\n");
+          printf("Delete Address - \n");
+          printf("Enter Alias name to be Deleted: \n");
+          scanf("%s",deletename);
+          del = false;
+          node = deleteAlias(node,deletename);
+          if(del == false){
+            printf("\n----------\n");
+            printf("This Alias is not available in the list");
+          }
+          printf("\n----------\n");
+        break;
+      
+      case 5:
+        printf("\n----------\n");
+        printf("IPV4 Address with Alias Name Displayed Below:");
+        printf("\n-----------------\n");
+          inOrder(node);
+          printf("\n-----------------\n");
+        break;
+      
+      case 6:
+          printf("\n----------\n");
+          printf("Alias Lookup - \n");
+
+          printf("Please enter the IPV4 Address (i.e. two values between 0 - 255)\n");
+          scanf("%d.%d",&ipnum1,&ipnum2);
+          if(ipnum1 > 0 && ipnum1 < 255 && ipnum2 > 0 && ipnum2 < 255){
+            checkal = false;
+            printf("Location: %d.%d\n", ipnum1, ipnum2);
+            lookupAlias(node,ipnum1,ipnum2);
+
+            if(checkal == false){
+              printf("\n----------\n");
+              printf("No IPV4 Address Available. Please Try Again...\n");
+              printf("\n----------\n");
+            }
+          }
+          else{
+            printf("--------------------------------------------------------\n");
+            printf("The IPV4 Address you entered is out of the range. Please Try Again...\n");
+            printf("--------------------------------------------------------\n");
+          }
+          
+        break;
+      
+      case 7:
+        printf("\n-----------\n");
+        printf("Save to File - \n");
+        savetofile(node);
+        printf("\n-----------\n");
+        break;
+
+      case 8:
+        printf("QUIT. THANK YOU\n");
+        exitFromProg(node);
+        break;
+
+      default: 
+          printf("\n-------------------------------\n");
+          printf("Invalid input: Try AGAIN (1-8) \n");
+          printf("\n-------------------------------\n");
+          break;
+    }
+  }
 return 0;
 }
