@@ -195,33 +195,34 @@ list* deleteAlias(list *node, char deletename[11])
             node->right = deleteAlias(node->right,temp->alias);
           }
         else
-           {
-            /* If there is only one or zero children then we can directly remove it from the tree and connect its parent to its child */                
-             printf("\nData: %s %d.%d.%d.%d\n",node->alias, node->octet[0], node->octet[1], node->octet[2], node->octet[3]); 
-             printf("Enter your choice: y->delete or n-> skip \n");
-             scanf("%s",ch);
-            if(strcmp(ch,match) == 0 || strcmp(ch,match2) == 0){
-              temp = node;
+        {
+          /* If there is only one or zero children then we can directly remove it from the tree and connect its parent to its child */                
+          printf("\nData: %s %d.%d.%d.%d\n",node->alias, node->octet[0], node->octet[1], node->octet[2], node->octet[3]); 
+          printf("Enter your choice:(y/n)) \n");
+          scanf("%s",ch);
+          if(strcmp(ch,match) == 0 || strcmp(ch,match2) == 0)
+          {
+            temp = node;
             if(node->left == NULL)
-               node = node->right;
+              node = node->right;
             else if(node->right == NULL)
-               node = node->left;
+              node = node->left;
              
-                printf("------------------------------------------------------------------------\n");
-                printf("The Ipv4 address along with the Alias name has been deleted from the file.\n");
-                printf("------------------------------------------------------------------------\n");
-                del = true;
-                free(temp);
+              printf("------------------------------------------------------------------------\n");
+              printf("The Ipv4 address along with the Alias name has been deleted from the file.\n");
+              printf("------------------------------------------------------------------------\n");
+              del = true;
+              free(temp);
 
+          }
+            else
+            {
+              del = true;
+              printf("-------------------------\n");
+              printf("You did not Delete any Entry.\n");
+              printf("-------------------------\n");
             }
-            else{
-                del = true;
-                printf("-------------------------\n");
-                printf("You did not Delete any Entry.\n");
-                printf("-------------------------\n");
-            }
-
-            }
+        }
       }
     return node;
 }   
@@ -452,13 +453,13 @@ int main()
       case 4:
         printf("\n----------\n");
           printf("Delete Address - \n");
-          printf("Enter Alias name to be Deleted: \n");
+          printf("Enter Alias name of the IPV4 Address to be Deleted: \n");
           scanf("%s",deletename);
           del = false;
           node = deleteAlias(node,deletename);
           if(del == false){
             printf("\n----------\n");
-            printf("This Alias is not available in the list");
+            printf("This %s Alias name is not available in the list",deletename);
           }
           printf("\n----------\n");
         break;
