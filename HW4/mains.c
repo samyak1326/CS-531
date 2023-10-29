@@ -3,11 +3,10 @@
 #include<string.h>
 #include<stdbool.h>
 
-
 typedef struct address_t{
  int octet[4];
  char alias[11];
- struct address_t *left, *right;
+ struct address_t *leftChild, *rightChild;
 
 }list;
 
@@ -32,7 +31,6 @@ void exitFromProg(list *root);
 
 
 //checking for duplicate entry for any IPv4 or alias name
-//-----------------------------------------------
 void checkDuplicate(list *node,int address[4] ,char str[11])
 {
   list *temp = node;
@@ -46,8 +44,8 @@ void checkDuplicate(list *node,int address[4] ,char str[11])
       dup = true;
       return;
     }
-    checkDuplicate(node->left,address,str);
-    checkDuplicate(node->right,address,str);
+    checkDuplicate(node->leftChild,address,str);
+    checkDuplicate(node->rightChild,address,str);
   }
 
   return;
@@ -67,8 +65,8 @@ void checkIPDuplicate(list *node,int change[4])
       return;
     }
     
-    checkIPDuplicate(node->left,change);
-    checkIPDuplicate(node->right,change);
+    checkIPDuplicate(node->leftChild,change);
+    checkIPDuplicate(node->rightChild,change);
   }
   return;
 }
@@ -85,16 +83,16 @@ list* insertintoTree(list* node, char str[11], int addr[4])
     node->octet[1] = addr[1];
     node->octet[2] = addr[2];
     node->octet[3] = addr[3];
-    node->left = node->right = NULL;
+    node->leftChild = node->rightChild = NULL;
     root = node;
   }
 
   else // insert to the left or right
   {
     if (strcmp(node->alias,str) > 0) 
-      node->left = insertintoTree(node->left, str, addr);
+      node->leftChild = insertintoTree(node->leftChild, str, addr);
     else 
-      node->right = insertintoTree(node->right, str, addr);
+      node->rightChild = insertintoTree(node->rightChild, str, addr);
   }
   return root;
 }
@@ -139,8 +137,8 @@ list* updateData(list* node,char updatename[11]){
         }
         }
         else{
-          updateData(temp->left, updatename);
-          updateData(temp->right, updatename);
+          updateData(temp->leftChild, updatename);
+          updateData(temp->rightChild, updatename);
     }
   }
 
@@ -152,13 +150,12 @@ list* minValueNode(list* node)
 {
     list* current = node;
     /* loop down to find the leftmost leaf */
-    while (current && current->left != NULL)
-        current = current->left;
+    while (current && current->leftChild != NULL)
+        current = current->leftChild;
     return current;
 }
 
-//-----------------------------------------------   
-//delete asked alias
+//delete
 list* deleteAlias(list *node, char deletename[11])
 {
   list *temp;
@@ -172,27 +169,24 @@ list* deleteAlias(list *node, char deletename[11])
     // If the alias to be deleted is smaller than the root's key, then it lies in left subtree
     else if (strcmp(deletename, (node->alias)) < 0)
     {
-        node->left = deleteAlias(node->left, deletename);
+        node->leftChild = deleteAlias(node->leftChild, deletename);
     }
   
     // // If the alias to be deleted is greater than the root's key, then it lies in right subtree
     else if (strcmp(deletename, (node->alias)) > 0)
     {
-        node->right = deleteAlias(node->right, deletename);
+        node->rightChild = deleteAlias(node->rightChild, deletename);
     }
   
     // if key is same as root's key,  then This is the node to be deleted
     else
       {
-        /* Now We can delete this node and replace with either minimum element 
-        in the right sub tree or maximum element in the left subtree*/
-        if(node->right && node->left)
+        if(node->rightChild && node->leftChild)
           {
-            /* Here we will replace with minimum element in the right sub tree */
-            temp = minValueNode(node->right);
+            temp = minValueNode(node->rightChild);
             strcpy(node->alias,temp->alias); 
             /* As we replaced it with some other node, we have to delete that node */
-            node->right = deleteAlias(node->right,temp->alias);
+            node->rightChild = deleteAlias(node->rightChild,temp->alias);
           }
         else
         {
@@ -203,10 +197,10 @@ list* deleteAlias(list *node, char deletename[11])
           if(strcmp(ch,match) == 0 || strcmp(ch,match2) == 0)
           {
             temp = node;
-            if(node->left == NULL)
-              node = node->right;
-            else if(node->right == NULL)
-              node = node->left;
+            if(node->leftChild == NULL)
+              node = node->rightChild;
+            else if(node->rightChild == NULL)
+              node = node->leftChild;
              
               printf("------------------------------------------------------------------------\n");
               printf("The Ipv4 address along with the Alias name has been deleted from the file.\n");
@@ -231,9 +225,9 @@ void savetofile_recursive(FILE *fp, list* temp1)
 {
     if(temp1!=NULL)
     {
-      savetofile_recursive(fp,temp1->left);
+      savetofile_recursive(fp,temp1->leftChild);
       fprintf(fp, "\n%s %d.%d.%d.%d", temp1->alias, temp1->octet[0], temp1->octet[1], temp1->octet[2], temp1->octet[3]);
-      savetofile_recursive(fp,temp1->right);
+      savetofile_recursive(fp,temp1->rightChild);
     }
 }
 // this is for saving int text file
@@ -254,7 +248,7 @@ void savetofile(list *node)
     fclose(fp);
 }
 
-//display data in alphabate order(here used inorder traversal)
+//display data in alphabate order (Inorder Traversal)
 void inOrder(list* node)
 {
   //base case
@@ -262,15 +256,15 @@ void inOrder(list* node)
     return;
 
   /* Recur on left subtree */
-  inOrder(node->left);
+  inOrder(node->leftChild);
   printf("%s ",node->alias );
   printf("%d.%d.%d.%d\n",node->octet[0],node->octet[1],node->octet[2],node->octet[3] );
   /* Recur on right subtree */
-  inOrder(node->right);
+  inOrder(node->rightChild);
 }
 
 //looking for any IPv4's alias
-//-----------------------------------------------
+
 void lookupAlias(list *node,int ipnum1, int ipnum2){
   list *temp = node;
   
@@ -281,13 +275,13 @@ void lookupAlias(list *node,int ipnum1, int ipnum2){
       printf("---------------------------\n");
       printf("Alias: %s\n", temp->alias);
     }
-    lookupAlias(temp->left, ipnum1, ipnum2);
-    lookupAlias(temp->right, ipnum1, ipnum2);
+    lookupAlias(temp->leftChild, ipnum1, ipnum2);
+    lookupAlias(temp->rightChild, ipnum1, ipnum2);
   }
 
 }
 //looking for any alias
-//-----------------------------------------------
+
 list *lookupdata(list *node, char checkname[11])
 {
   if(node != NULL){
@@ -295,9 +289,9 @@ list *lookupdata(list *node, char checkname[11])
           return node;
       } 
       else {
-          list* foundNode = lookupdata(node->left, checkname);
+          list* foundNode = lookupdata(node->leftChild, checkname);
           if(foundNode == NULL) {
-              foundNode = lookupdata(node->right, checkname);
+              foundNode = lookupdata(node->rightChild, checkname);
           }
           return foundNode;
         }
@@ -308,7 +302,7 @@ list *lookupdata(list *node, char checkname[11])
   }
 }
 
-//exit funtion
+//exit
 void exitFromProg(list *root){
       printf("\n-----------\n");
       printf("Exiting from the program");
@@ -321,8 +315,8 @@ void exitFromProg(list *root){
 void freeTree(list* node) {
 
     if (node == NULL) return; 
-    freeTree(node->left); 
-    freeTree(node->right); 
+    freeTree(node->leftChild); 
+    freeTree(node->rightChild); 
     free(node); 
 }
 
@@ -359,6 +353,8 @@ int main()
     int ipnum1,ipnum2;
     int ch;
     char checkname[15];
+
+    //Menu to display
     printf("\nMenu\n");
 
     printf("1: Add Address\n");
@@ -490,9 +486,9 @@ int main()
             }
           }
           else{
-            printf("--------------------------------------------------------\n");
+            printf("--- -----------------------------------------------------\n");
             printf("The IPV4 Address you entered is out of the range. Please Try Again...\n");
-            printf("--------------------------------------------------------\n");
+            printf("--- -----------------------------------------------------\n");
           }
           
         break;
