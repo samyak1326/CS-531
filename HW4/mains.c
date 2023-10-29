@@ -311,6 +311,7 @@ void exitFromProg(list *root){
       exit(0);
 }
 
+
 //at last free the heap
 void freeTree(list* node) {
 
@@ -411,8 +412,9 @@ int main()
           }
         break;
       case 2:
+      {
           printf("\n------------------------------\n");
-          printf("The Ip AddresscLookup - \n");
+          printf("The Ip Address Lookup - \n");
           printf("Please enter the Alias name: \n");
           scanf("%s",checkname);
 
@@ -429,8 +431,10 @@ int main()
             printf("\n------------------------------\n");
           }
         break;
+      }
+        
 
-      case 3:
+      case 3:{
         
           printf("\n----------\n");
           printf("Update The Ipv4 Address - \n");
@@ -444,7 +448,7 @@ int main()
             printf("\n----------\n");
           }
 
-        break;
+        break;}
 
       case 4:
         printf("\n----------\n");
