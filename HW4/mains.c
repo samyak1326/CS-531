@@ -35,7 +35,7 @@ void checkDuplicate(list *node,int address[4] ,char str[11])
 {
   list *temp = node;
   if(temp != NULL){
-    if(temp->octet[0] == address[0] && temp->octet[1] == address[1] && temp->octet[2] == address[2] & temp->octet[3] == address[3])
+    if(temp->octet[0] == address[0] && temp->octet[1] == address[1] && temp->octet[2] == address[2] && temp->octet[3] == address[3])
     {
       dup = true;
       return;
@@ -60,7 +60,7 @@ void checkIPDuplicate(list *node,int change[4])
   
   if(temp != NULL)
   {
-    if(temp->octet[0] == change[0] && temp->octet[1] == change[1] && temp->octet[2] == change[2] & temp->octet[3] == change[3]){
+    if(temp->octet[0] == change[0] && temp->octet[1] == change[1] && temp->octet[2] == change[2] && temp->octet[3] == change[3]){
       dup = true;
       return;
     }
@@ -199,14 +199,17 @@ list* deleteAlias(list *node, char deletename[11])
             temp = node;
             if(node->leftChild == NULL)
               node = node->rightChild;
-            else if(node->rightChild == NULL)
-              node = node->leftChild;
+            else 
+            {
+              if(node->rightChild == NULL)
+                node = node->leftChild;
              
-              printf("------------------------------------------------------------------------\n");
-              printf("The Ipv4 address along with the Alias name has been deleted from the file.\n");
-              printf("------------------------------------------------------------------------\n");
-              del = true;
-              free(temp);
+                printf("------------------------------------------------------------------------\n");
+                printf("The Ipv4 address along with the Alias name has been deleted from the file.\n");
+                printf("------------------------------------------------------------------------\n");
+                del = true;
+                free(temp);
+            }
 
           }
             else
@@ -304,6 +307,7 @@ list *lookupdata(list *node, char checkname[11])
 
 //exit
 void exitFromProg(list *root){
+
       printf("\n-----------\n");
       printf("Exiting from the program");
       printf("\n-----------\n");
@@ -345,7 +349,6 @@ int main()
         node = insertintoTree(node,address_t.alias,ip);
     }
     fclose(fp);
-
   while(1)
   {
 
